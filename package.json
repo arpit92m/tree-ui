@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --config ./build-config/webpack.config.js --watch-poll",
      "build": "webpack -p --config ./build-config/webpack.prod.config.js"
-  },
+, "server": "nodemon ./server/server.js"  },
   "author": "arpit",
   "license": "ISC",
   "keywords": [
