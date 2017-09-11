@@ -5,7 +5,7 @@ import axios from 'axios';
 export class EditModal extends Component{
 constructor(props) {
         super(props);
-        this.state={text:''}
+        this.state={text:'',isFetching:false}
         this.saveText = this.saveText.bind(this);
         this.addData = this.addData.bind(this);
         this.removeModal = this.removeModal.bind(this);
@@ -18,6 +18,7 @@ constructor(props) {
 
     addData() {
       var self=this;
+      this.setState({isFetching:true})
       if(this.state.text===this.props.node.text){
         alert("name can't be same")
       }
@@ -28,6 +29,7 @@ constructor(props) {
       originalText:this.props.node.text
   })
   .then(function (response) {
+    self.setState({isFetching:false})
     self.props.nodeEdited(self.state.text);
   })
   .catch(function (error) {
@@ -52,6 +54,10 @@ constructor(props) {
     <button type="submit" onClick={this.addData}>submit</button>
    <button type="button" className="cancelbtn" onClick={this.removeModal}>Cancel</button>
    </div>
+   {
+    this.state.isFetching && 
+    <div className="loader-wrapper"><div className="loader"></div></div>
+   }
   </div>
 )
     }

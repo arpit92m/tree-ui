@@ -5,7 +5,7 @@ import axios from 'axios';
 export class SwapModal extends Component{
 constructor(props) {
         super(props);
-        this.state={text:''}
+        this.state={text:'',isFetching:false}
         this.saveText = this.saveText.bind(this);
         this.addData = this.addData.bind(this);
         this.searchText = this.searchText.bind(this);
@@ -28,7 +28,7 @@ constructor(props) {
     }
 
     addData() {
-
+    this.setState({isFetching:true})
      var siblingIsPresent = this.searchText(this.state.text)
      if(siblingIsPresent && siblingIsPresent.text!==this.props.node.text){
       var self=this;
@@ -37,6 +37,7 @@ constructor(props) {
     swapId:[this.props.node.id,siblingIsPresent.id]
   })
   .then(function (response) {
+    self.setState({isFetching:false})
     self.props.swapNodes(siblingIsPresent.id);
   })
   .catch(function (error) {
@@ -66,6 +67,10 @@ else {
     <button type="submit" onClick={this.addData}>submit</button>
    <button type="button" className="cancelbtn" onClick={this.removeModal}>Cancel</button>
    </div>
+   {
+    this.state.isFetching && 
+    <div className="loader-wrapper"><div className="loader"></div></div>
+   }
   </div>
 )
     }

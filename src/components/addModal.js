@@ -5,7 +5,7 @@ import axios from 'axios';
 export class AddModal extends Component{
 constructor(props) {
         super(props);
-        this.state={text:'',desc:''}
+        this.state={text:'',desc:'',isFetching:false}
         this.addData = this.addData.bind(this);
         this.saveText = this.saveText.bind(this);
         this.removeModal = this.removeModal.bind(this);
@@ -18,6 +18,7 @@ constructor(props) {
 
     addData() {
     	var self = this;
+    	this.setState({isFetching:true})
      axios.post('http://localhost:3001/addNode', {
     parent:this.props.node,
     child:{parent:this.props.node.text,text:this.state.text,parentChain:this.props.node.parentChain}
@@ -27,6 +28,7 @@ constructor(props) {
   		alert("plase give a different name")
   	}
   	else{
+  		self.setState({isFetching:false})
   	self.props.addNewData(response.data.ops[0]);
   }
   })
@@ -55,6 +57,10 @@ constructor(props) {
     <button type="submit" onClick={this.addData}>submit</button>
    <button type="button" onClick={this.removeModal}className="cancelbtn">Cancel</button>
    </div>
+   {
+    this.state.isFetching && 
+    <div className="loader-wrapper"><div className="loader"></div></div>
+   }
   </div>
 )
     }

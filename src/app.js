@@ -30,8 +30,9 @@ componentDidMount() {
 
     return (<div>
        <h1> Tree View Component</h1>
-      {data.length>0 &&
+      {data.length>0 ?
   <TreeNode data = {data} level={1} parentChain="null"/> 
+  :<div className="loader-wrapper"><div className="loader"></div></div>
 }
             </div>
     );
