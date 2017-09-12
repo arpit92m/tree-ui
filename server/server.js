@@ -15,7 +15,7 @@ var port = process.env.API_PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/static', express.static(path.join(__dirname, '../build')))
+app.use('/', express.static(path.join(__dirname, '../build')))
 
 app.use(function(req, res, next) {
  res.setHeader('Access-Control-Allow-Origin', '*');
