@@ -9,7 +9,7 @@ var path = require('path');
 var app = express();
 var router = express.Router();
 
-var port = process.env.API_PORT || 5000;
+app.set('port', (process.env.PORT || 5000));
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
