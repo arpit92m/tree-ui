@@ -114,7 +114,7 @@ export class TreeNode extends Component {
 
         var self = this,
             removedIndex = e.target.getAttribute('data-id').split("_")[1] * 1;
-        axios.post('http://localhost:3001/removeAllNodes', {
+        axios.post('https://thawing-spire-80596.herokuapp.com/removeAllNodes', {
                 id: e.target.getAttribute('data-id'),
                 parentChain: this.props.parentChain,
                 parentText: this.state.parentData[0].parent,

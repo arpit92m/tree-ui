@@ -19,7 +19,7 @@ constructor(props) {
     addData() {
     	var self = this;
     	this.setState({isFetching:true})
-     axios.post('http://localhost:3001/addNode', {
+     axios.post('https://thawing-spire-80596.herokuapp.com/addNode', {
     parent:this.props.node,
     child:{parent:this.props.node.text,text:this.state.text,parentChain:this.props.node.parentChain}
   })

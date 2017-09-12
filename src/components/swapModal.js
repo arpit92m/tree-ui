@@ -32,7 +32,7 @@ constructor(props) {
      var siblingIsPresent = this.searchText(this.state.text)
      if(siblingIsPresent && siblingIsPresent.text!==this.props.node.text){
       var self=this;
-     axios.post('http://localhost:3001/updateNodes', {
+     axios.post('https://thawing-spire-80596.herokuapp.com/updateNodes', {
     text:[this.props.node.text,siblingIsPresent.text],
     swapId:[this.props.node.id,siblingIsPresent.id]
   })

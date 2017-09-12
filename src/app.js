@@ -14,7 +14,7 @@ class App extends Component {
 
 componentDidMount() {
   var self = this;
-   axios.get('http://localhost:3001/findAllNodes?parent=null')
+   axios.get('https://thawing-spire-80596.herokuapp.com/findAllNodes?parent=null')
   .then(function (response) {
     let nodes=response.data;
     self.setState({data:nodes})

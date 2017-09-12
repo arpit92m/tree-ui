@@ -23,7 +23,7 @@ constructor(props) {
         alert("name can't be same")
       }
       else{
-     axios.post('http://localhost:3001/editNode', {
+     axios.post('https://thawing-spire-80596.herokuapp.com/editNode', {
       id:this.props.node.id,
       text:this.state.text,
       originalText:this.props.node.text
