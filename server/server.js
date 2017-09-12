@@ -141,6 +141,9 @@ app.post('/editNode',function(req,res){
    });
 });
 
-app.listen(port, function() {
- console.log(`api running on port ${port}`);
+app.get('/', function(request, response) {
+    var result = 'App is running'
+    response.send(result);
+}).listen(app.get('port'), function() {
+    console.log('App is running, server is listening on port ', app.get('port'));
 });
