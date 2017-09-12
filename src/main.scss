@@ -17,6 +17,7 @@ body{
     width: 100%;
     height: 100%;
     background: white;
+    opacity: 0.5;
 
 
 .loader {
@@ -26,7 +27,7 @@ body{
   width: 120px;
   height: 120px;
   margin:auto auto;
-  margin-top:30%;
+  margin-top:300px;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }

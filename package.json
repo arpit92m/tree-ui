@@ -5,8 +5,9 @@
   "main": "src/app.js",
   "scripts": {
     "start": "webpack-dev-server --config ./build-config/webpack.config.js --watch-poll",
-     "build": "webpack -p --config ./build-config/webpack.prod.config.js"
-, "server": "nodemon ./server/server.js"  },
+    "build": "webpack -p --config ./build-config/webpack.prod.config.js",
+    "web": "nodemon ./server/server.js"
+  },
   "author": "arpit",
   "license": "ISC",
   "keywords": [
@@ -24,8 +25,9 @@
     "mongodb": "^2.2.31",
     "mongoose": "^4.11.10",
     "nodemon": "^1.12.0",
+    "path": "^0.12.7",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react-dom": "^15.5.4"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",

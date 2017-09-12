@@ -4,6 +4,7 @@ var express = require('express');
 var database = require('./database');
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
+var path = require('path');
 
 var app = express();
 var router = express.Router();
@@ -13,6 +14,8 @@ var port = process.env.API_PORT || 3001;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use('/static', express.static(path.join(__dirname, '../build')))
 
 app.use(function(req, res, next) {
  res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,7 +32,7 @@ app.post('/addNode',function(req,res){
 	console.log(req.body.child);
 
 	database.connect().then(function(db){
-        db.collection('tracxn').find({parent:req.body.parent.text}).toArray(function(error,response){
+        db.collection('mydb').find({parent:req.body.parent.text}).toArray(function(error,response){
         	if(error){
            	res.send(error);
            }
