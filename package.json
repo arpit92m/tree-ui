@@ -8,6 +8,9 @@
     "build": "webpack -p --config ./build-config/webpack.prod.config.js",
     "web": "nodemon ./server/server.js"
   },
+  "engines": {
+    "node": "4.5.0"
+  },
   "author": "arpit",
   "license": "ISC",
   "keywords": [
