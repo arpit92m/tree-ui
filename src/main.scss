@@ -90,9 +90,15 @@ body{
     color: cadetblue;
     padding-right: 0px;
     &:hover {
-                    color: #8dd2d4;
-                    cursor:pointer;
-                    }
+            color: #8dd2d4;
+             cursor:pointer;
+          
+      }
+}
+
+.button-wrap{
+  margin-bottom:30px;
+  margin-left:20px;
 }
 
 li {
@@ -107,5 +113,10 @@ a {
     text-decoration: none;
     line-height: 3;
     margin-left: 20px;
+}
+
+.tooltip-default{
+  display: inline-block;
+    float: right;
 }
 

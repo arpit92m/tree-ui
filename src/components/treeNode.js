@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AddModal } from './addModal';
 import { SwapModal } from './swapModal';
 import { EditModal } from './editModal';
+import { Icon } from './icon';
 
 export class TreeNode extends Component {
     constructor(props) {
@@ -36,6 +37,18 @@ export class TreeNode extends Component {
 
 
     }
+
+
+    componentWillReceiveProps(nextProps) {
+        const { parentData } = this.state;
+        if(!this.props.collapse && nextProps.collapse){
+            this.initializeToggleValue(parentData.length)
+            this.props.collapseDone();
+        }
+
+
+    }
+
 
 
     hideEditModal() {
@@ -84,7 +97,7 @@ export class TreeNode extends Component {
             childDataCopy = this.state.childData;
         parentDataCopy[editedNodeIndex].text = textAfterEdit;
         this.setState({ parentData: parentDataCopy, showEditModal: false }, () => {
-            this.initializeToggleValue(parentData)
+          
         })
     }
 
@@ -183,13 +196,17 @@ export class TreeNode extends Component {
             var toggleCopy = this.state.toggleValues,
                 self = this;
             toggleCopy[parentIndex] = true
-            axios.get('http://localhost:3001/findAllNodes?parent=' + e.target.innerText)
+            axios.get('https://thawing-spire-80596.herokuapp.com/findAllNodes?parent=' + e.target.innerText)
                 .then(function(response) {
-
+                  if(response.data.length===0){
+                    alert("no children found,click on + icon to add children ");
+                  }
+                  else{
                     let nodes = response.data,
                         childValues = self.state.childData;
                     childValues[parentIndex] = nodes;
                     self.setState({ childData: childValues, toggleValues: toggleCopy })
+                }
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -209,7 +226,13 @@ export class TreeNode extends Component {
                 <ul > {
                     parentData.map((value, index) => {
                             return ( <div>
-                                    <li ><span><a href="#" onClick={this.showChildData} id={value.parent+"_"+index}>{value.text}</a><span onClick = {this.showAddModal}><i className="fa fa-plus-circle fa-2x"  data-id={value.parent+"_"+index} data-value = {value.text}></i></span><i onClick = {this.removeNode} className="fa fa-minus-circle fa-2x"  data-id={value.parent+"_"+index} data-value = {value.text}></i><i className="fa fa-refresh fa-2x" data-id={value.parent+"_"+index} data-value = {value.text} onClick ={this.showSwapModal} aria-hidden="true"></i><i className="fa fa-pencil-square-o fa-2x" data-value = {value.text} onClick={this.editText} data-id={value.parent+"_"+index} aria-hidden="true"></i></span></li>                               
+                                    <li ><span><a href="#" onClick={this.showChildData} id={value.parent+"_"+index}>{value.text}</a>
+                                        <Icon onClick = {this.showAddModal} tooltip="add child" classType = "plus-circle" dataNeeded = {[value.parent+"_"+index , value.text]} />
+                                        <Icon onClick = {this.removeNode} tooltip="delete node" classType="minus-circle" dataNeeded = {[value.parent+"_"+index , value.text]} />
+                                        <Icon onClick = {this.showSwapModal} tooltip="swap node" classType="refresh" dataNeeded = {[value.parent+"_"+index , value.text]} />
+                                        <Icon onClick = {this.editText} tooltip="edit node" classType = "pencil-square-o" dataNeeded = {[value.parent+"_"+index , value.text]} />
+                                    </span>
+                                    </li>                               
                                      {toggleValues[index] &&
                                     <TreeNode data = { childData[index] } level = { this.props.level + 1 } parentChain = { this.props.parentChain + "_" + value.text }/>
                                   } 
@@ -219,7 +242,7 @@ export class TreeNode extends Component {
                         </ul> 
                         {
                             showAddModal &&
-                                <AddModal node = { addedToNode } hideModal = { this.hideAddModal } addNewData = { this.addNewData }/>
+                                <AddModal node = { addedToNode } hideModal = { this.hideAddModal } addNewData = { this.addNewData } level={this.props.level+1}/>
                         } {
                             showSwapModal &&
                                 <SwapModal node = { swappedNode } hideModal = { this.hideSwapModal } siblings = { parentData } swapNodes = { this.swapNodes }/>

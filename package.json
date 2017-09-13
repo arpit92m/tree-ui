@@ -4,8 +4,9 @@
   "description": "tree view application",
   "main": "src/app.js",
   "scripts": {
+    "start": "webpack-dev-server --config ./build-config/webpack.config.js --watch-poll",
     "build": "webpack -p --config ./build-config/webpack.prod.config.js",
-    "start": "nodemon ./server/server.js"
+    "web": "nodemon ./server/server.js"
   },
   "engines": {
     "node": "4.5.0"

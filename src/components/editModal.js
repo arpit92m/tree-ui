@@ -9,11 +9,21 @@ constructor(props) {
         this.saveText = this.saveText.bind(this);
         this.addData = this.addData.bind(this);
         this.removeModal = this.removeModal.bind(this);
+        this.initialCheck = this.initialCheck.bind(this);
 
     }
 
     removeModal(){
       this.props.hideModal();
+    }
+
+    initialCheck(){
+       if(this.state.text === ""){
+        alert("Name can't be empty");
+       }
+       else{
+        this.addData();
+       }
     }
 
     addData() {
@@ -51,7 +61,7 @@ constructor(props) {
     	<div className="input-wrapper">
     <input type="text" className="inputContainer" onChange={this.saveText} placeholder="Edit Name" name="text" required/>
    </div>
-    <button type="submit" onClick={this.addData}>submit</button>
+    <button type="submit" onClick={this.initialCheck}>submit</button>
    <button type="button" className="cancelbtn" onClick={this.removeModal}>Cancel</button>
    </div>
    {

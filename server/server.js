@@ -28,20 +28,26 @@ app.use(function(req, res, next) {
 });
 
 app.post('/addNode',function(req,res){
-	console.log(req.body.parent);
-	console.log(req.body.child);
-
+  var flagForSameName = false;
+  console.log(req.body.parent);
 	database.connect().then(function(db){
-        db.collection('mydb').find({parent:req.body.parent.text}).toArray(function(error,response){
+        db.collection('tracxn').find({parent:req.body.parent.text}).toArray(function(error,response){
         	if(error){
            	res.send(error);
            }
+           console.log(response);
            response.forEach((doc)=>{
+
              if(doc.text===req.body.child.text){
-             	res.send("same name")
+
+             	flagForSameName=true;
              	database.close(db);
              }
            })
+           if(flagForSameName) {
+            res.send("same name")
+           }
+           else{
            var newChild = req.body.child;
            newChild.id=req.body.parent.text+"_"+response.length
 		db.collection('tracxn').insert(newChild,function(err,result){
@@ -50,17 +56,20 @@ app.post('/addNode',function(req,res){
            }
            res.send(result)
 
+
 		});
 		database.close(db);
+  }
 	 });
    });
 });
 
 
 app.post('/removeAllNodes',function(req,res){
-	console.log('*.'+req.body.parentChain+'.*');
+	console.log('*.'+req.body.parentText+'.*');
+  var indexDeletion = req.body.id.split("_")[1]
 	database.connect().then(function(db){
-		db.collection('tracxn').remove({ id: req.body.id },function(error,response){
+		db.collection('tracxn').remove({ id: req.body.id },function(error,response1){
 		if(error){
            	res.send(error);
            }
@@ -68,8 +77,25 @@ app.post('/removeAllNodes',function(req,res){
            if(err){
            	res.send(err);
            }
-           res.send(result)
+    db.collection('tracxn').find({parent:req.body.parentText}).toArray(function(err,response){
+          if(err){
+       
+            res.send(err);
+           }
+         response.forEach(function(doc) {
+          if(doc.id.split("_")[1]>indexDeletion) {
+          console.log(doc.id)
+          doc.id = doc.id.replace(doc.id.split("_")[1],(doc.id.split("_")[1]*1-1).toString())
+          console.log(doc.id)
+           db.collection('tracxn').save(doc)
+        }
+           
+         
+      })
+              res.send("deleted");
            database.close(db);
+         });
+        
 		});
 	});
 	});
@@ -115,15 +141,28 @@ app.post('/editNode',function(req,res){
            if(error){
            	res.send(error);
            }
+           console.log("reeeeee",result.data)
 
        db.collection('tracxn').updateMany({parent:req.body.originalText},{$set:{parent:req.body.text}},function(errorAfterParentSwap,responseAfterParentSwap){
            if(errorAfterParentSwap){
            	res.send(errorAfterParentSwap);
            }
+
+       db.collection('tracxn').find({parent:req.body.originalText}).toArray(function(err,responseForIdSwap){
+          if(err){
+            res.send(err);
+           }
+           console.log("r,responseForIdSwap",responseForIdSwap)
+         responseForIdSwap.forEach(function(doc) {
+           console.log(doc.id)
+          doc.id = doc.id.replace(req.body.originalText,req.body.text)
+           console.log(doc.id)
+          db.collection('tracxn').save(doc)
+      })
+  
        db.collection('tracxn').find({parentChain:{$regex:req.body.originalText}}).toArray(function(err,response){
           if(err){
-          	 console.log('hre')
-           	res.send(err);
+          	res.send(err);
            }
           console.log(response)
          response.forEach(function(doc) {
@@ -135,7 +174,7 @@ app.post('/editNode',function(req,res){
        res.send(result);
            database.close(db);
 		});
-
+});
       })
        })
    });

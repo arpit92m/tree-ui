@@ -9,6 +9,7 @@ constructor(props) {
         this.addData = this.addData.bind(this);
         this.saveText = this.saveText.bind(this);
         this.removeModal = this.removeModal.bind(this);
+        this.initialCheck = this.initialCheck.bind(this);
 
     }
 
@@ -16,16 +17,26 @@ constructor(props) {
     	this.props.hideModal();
     }
 
+    initialCheck(){
+       if(this.state.text === ""){
+        alert("Child name can't be empty");
+       }
+       else{
+        this.addData();
+       }
+    }
+
     addData() {
     	var self = this;
     	this.setState({isFetching:true})
      axios.post('https://thawing-spire-80596.herokuapp.com/addNode', {
     parent:this.props.node,
-    child:{parent:this.props.node.text,text:this.state.text,parentChain:this.props.node.parentChain}
+    child:{parent:this.props.node.text,text:this.state.text,parentChain:this.props.node.parentChain,level:this.props.level}
   })
   .then(function (response) {
-  	if(response==="same name"){
-  		alert("plase give a different name")
+  	if(response.data==="same name"){
+  		alert("please give a different name")
+      self.props.hideModal();
   	}
   	else{
   		self.setState({isFetching:false})
@@ -41,9 +52,6 @@ constructor(props) {
     	if(e.target.name==='text') {
     		this.setState({text:e.target.value})
     	}
-    	else{
-    		this.setState({desc:e.target.value})
-    	}
 
     }
     render() {
@@ -54,7 +62,7 @@ constructor(props) {
     	<div className="input-wrapper">
     <input type="text" className="inputContainer" onChange={this.saveText} placeholder="Enter text" name="text" required/>
     </div>
-    <button type="submit" onClick={this.addData}>submit</button>
+    <button type="submit" onClick={this.initialCheck}>submit</button>
    <button type="button" onClick={this.removeModal}className="cancelbtn">Cancel</button>
    </div>
    {

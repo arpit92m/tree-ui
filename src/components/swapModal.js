@@ -10,6 +10,8 @@ constructor(props) {
         this.addData = this.addData.bind(this);
         this.searchText = this.searchText.bind(this);
     this.removeModal = this.removeModal.bind(this);
+    this.initialCheck = this.initialCheck.bind(this);
+
 
     }
 
@@ -27,10 +29,25 @@ constructor(props) {
       return false;
     }
 
+    initialCheck(){
+      var siblingIsPresent = this.searchText(this.state.text)
+      if(!siblingIsPresent){
+        alert("sibling element not found");
+      }
+      else if(siblingIsPresent.text===this.props.node.text){
+        alert("Please give a different name");
+      }
+      else if(this.state.text===""){
+        alert("Name can't be empty");
+      }
+      else{
+        this.addData()
+      }
+    }
+
     addData() {
-    this.setState({isFetching:true})
-     var siblingIsPresent = this.searchText(this.state.text)
-     if(siblingIsPresent && siblingIsPresent.text!==this.props.node.text){
+      this.setState({isFetching:true})
+      var siblingIsPresent = this.searchText(this.state.text)
       var self=this;
      axios.post('https://thawing-spire-80596.herokuapp.com/updateNodes', {
     text:[this.props.node.text,siblingIsPresent.text],
@@ -43,10 +60,7 @@ constructor(props) {
   .catch(function (error) {
     console.log(error);
   });
-}
-else {
-  alert('no sibling found');
-}
+
     }
 
     saveText(e) {
@@ -64,7 +78,7 @@ else {
     	<div className="input-wrapper">
     <input type="text" className="inputContainer" onChange={this.saveText} placeholder="Enter node that needs to be replaced" name="text" required/>
    </div>
-    <button type="submit" onClick={this.addData}>submit</button>
+    <button type="submit" onClick={this.initialCheck}>submit</button>
    <button type="button" className="cancelbtn" onClick={this.removeModal}>Cancel</button>
    </div>
    {

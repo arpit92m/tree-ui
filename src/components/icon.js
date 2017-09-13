@@ -14,7 +14,11 @@ constructor(props) {
 
     render() {
     	return (
-    		<i className="fa fa-"+this.props.classType+" fa-2x" onClick = {this.showModal} data-id={data-needed[0]} data-value = {data-needed[1]}></i>
-    		<span className="tooltiptext">Tooltip text</span>
+    	<div title={this.props.tooltip} className="tooltip-default">
+    		<i className={`fa fa-${this.props.classType} fa-2x`} onClick = {this.showModal} data-id={this.props.dataNeeded[0]} data-value = {this.props.dataNeeded[1]}>
+    		
+    		</i>
+    		</div>
     		)
     }
+}
