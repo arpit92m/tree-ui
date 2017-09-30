@@ -8,7 +8,7 @@ import { Icon } from './icon';
 export class TreeNode extends Component {
     constructor(props) {
         super(props);
-        this.state = { toggleValues: [], parentData: [], childData: [], showAddModal: false, showSwapModal: false, addedToNode: {}, swappedNode: {}, editedNode: {}, showEditModal: false }
+        this.state = { toggleValues: [], parentData: [], childData: [], showAddModal: false, showSwapModal: false, addedToNode: {}, swappedNode: {}, editedNode: {}, showEditModal: false,expand:false }
 
         this.showChildData = this.showChildData.bind(this);
         this.sortAccordingToLastIndex = this.sortAccordingToLastIndex.bind(this);
@@ -16,7 +16,6 @@ export class TreeNode extends Component {
         this.initializeChildData = this.initializeChildData.bind(this);
         this.showAddModal = this.showAddModal.bind(this);
         this.showSwapModal = this.showSwapModal.bind(this);
-        this.setToggleValuesTrue = this.setToggleValuesTrue.bind(this);
         this.removeNode = this.removeNode = this.removeNode.bind(this);
         this.hideAddModal = this.hideAddModal.bind(this);
         this.removeFromTree = this.removeFromTree.bind(this);
@@ -26,6 +25,8 @@ export class TreeNode extends Component {
         this.editText = this.editText.bind(this);
         this.hideEditModal = this.hideEditModal.bind(this);
         this.nodeEdited = this.nodeEdited.bind(this);
+        this.initializeToggleValueToTrue = this.initializeToggleValueToTrue.bind(this);
+        this.onExpand = this.onExpand.bind(this);
 
     }
 
@@ -43,11 +44,28 @@ export class TreeNode extends Component {
         const { parentData } = this.state;
         if(!this.props.collapse && nextProps.collapse){
             this.initializeToggleValue(parentData.length)
+            this.initializeChildData(parentData.length);
             this.props.collapseDone();
+        }
+        if(!this.props.expand && nextProps.expand && this.props.level===1){
+            this.initializeToggleValueToTrue(parentData.length)
+            this.props.expansionDone();
         }
 
 
     }
+
+    componentDidMount(){
+        const { parentData } = this.state;
+        if(this.props.expand){
+              this.initializeToggleValueToTrue(parentData.length)
+        }
+    }
+
+
+    onExpand(){
+          this.setState({expand:!this.state.expand})
+        }
 
 
 
@@ -141,16 +159,6 @@ export class TreeNode extends Component {
             });
     }
 
-    setToggleValuesTrue() {
-        var i = 0,
-            toggleData = this.state.toggleValues;
-        while (i < toggleData.length) {
-            toggleData[i] = true;
-            i++;
-        }
-        this.setState({ toggleValues: toggleData })
-    }
-
     showAddModal(e) {
         this.setState({ showAddModal: true, addedToNode: { text: e.target.getAttribute('data-value'), id: e.target.getAttribute('data-id'), parentChain: this.props.parentChain + "_" + e.target.getAttribute('data-value') } });
     }
@@ -168,6 +176,16 @@ export class TreeNode extends Component {
             i++;
         }
         this.setState({ toggleValues: toggleData })
+    }
+
+    initializeToggleValueToTrue(length) {
+        var i = 0,
+            toggleData = [];
+        while (i < length) {
+            toggleData.push(true)
+            i++;
+        }
+        this.showChildDataWithLevel(toggleData);
     }
 
     initializeChildData(length) {
@@ -205,22 +223,54 @@ export class TreeNode extends Component {
                     let nodes = response.data,
                         childValues = self.state.childData;
                     childValues[parentIndex] = nodes;
-                    self.setState({ childData: childValues, toggleValues: toggleCopy })
+                    self.setState({ childData: childValues, toggleValues: toggleCopy,expand:false })
                 }
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
         } else {
-            var toggleCopy = this.state.toggleValues;
+            var toggleCopy = this.state.toggleValues,childDataCopy=this.state.childData;
             toggleCopy[parentIndex] = false;
-            this.setState({ toggleValues: toggleCopy })
+            childDataCopy[parentIndex]=[];
+            this.setState({ toggleValues: toggleCopy,childData:childDataCopy })
         }
     }
 
+    showChildDataWithLevel(toggleCopy) {
+
+        const {childData,parentData} = this.state;
+         var idx = 0,
+            childValues = [];
+        while (idx < parentData.length) {
+            childValues.push([])
+            idx++;
+        }
+            var self = this,parentDataCopy=parentData;
+            axios.get('http://localhost:5000/findAllNodesWithLength?level=' + this.props.level)
+                .then(function(response) {
+                    response.data.map((value,index)=>{
+                        var i=0;
+                      while(parentDataCopy.length>i){
+                         if(parentData[i].text === value.id.split("_")[0]){
+                            childValues[i].push(value);
+                         }
+                         i++;
+                      }
+                    })
+                    
+                    self.setState({ childData: childValues, toggleValues: toggleCopy,expand:true })
+                
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+    
+
 
     render() {
-            const { parentData, toggleValues, childData, showSwapModal, showAddModal, addedToNode, collapse, swappedNode, editedNode, showEditModal } = this.state;
+            const { parentData, toggleValues, childData, showSwapModal, showAddModal, addedToNode, collapse, swappedNode, editedNode, showEditModal,expand } = this.state;
             return ( <div id = 'app-container' className = 'container' > { /* Header content , common for entire application */ } 
                 <div >
                 <ul > {
@@ -234,7 +284,7 @@ export class TreeNode extends Component {
                                     </span>
                                     </li>                               
                                      {toggleValues[index] &&
-                                    <TreeNode data = { childData[index] } level = { this.props.level + 1 } parentChain = { this.props.parentChain + "_" + value.text }/>
+                                    <TreeNode data = { childData[index] } level = { this.props.level + 1 } parentChain = { this.props.parentChain + "_" + value.text } expand = {expand} expansionDone={this.onExpand}/>
                                   } 
                                     </div> )
                                 })

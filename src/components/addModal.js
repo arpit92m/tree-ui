@@ -8,14 +8,10 @@ constructor(props) {
         this.state={text:'',desc:'',isFetching:false}
         this.addData = this.addData.bind(this);
         this.saveText = this.saveText.bind(this);
-        this.removeModal = this.removeModal.bind(this);
         this.initialCheck = this.initialCheck.bind(this);
 
     }
 
-    removeModal(){
-    	this.props.hideModal();
-    }
 
     initialCheck(){
        if(this.state.text === ""){
@@ -63,7 +59,7 @@ constructor(props) {
     <input type="text" className="inputContainer" onChange={this.saveText} placeholder="Enter text" name="text" required/>
     </div>
     <button type="submit" onClick={this.initialCheck}>submit</button>
-   <button type="button" onClick={this.removeModal}className="cancelbtn">Cancel</button>
+   <button type="button" onClick={this.props.hideModal.bind(null)}className="cancelbtn">Cancel</button>
    </div>
    {
     this.state.isFetching && 

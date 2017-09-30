@@ -41,8 +41,9 @@ componentDidMount() {
     return (<div>
        <h1> Tree View Component</h1>
        <button type="submit" className="button-wrap" onClick={this.onCollapse}>collapse</button>
+       <button type="submit" className="button-wrap" onClick={this.onExpand}>Expand All</button>
     {data.length>0 ?
-  <TreeNode data = {data} level={1} parentChain="null" collapse={collapse} collapseDone={this.onCollapse} expansionDone={this.onExpand}/> 
+  <TreeNode data = {data} level={1} parentChain="null" collapse={collapse} collapseDone={this.onCollapse} expand = {expand} expansionDone={this.onExpand}/> 
   :<div className="loader-wrapper"><div className="loader"></div></div>
 }
             </div>

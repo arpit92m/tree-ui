@@ -9,15 +9,11 @@ constructor(props) {
         this.saveText = this.saveText.bind(this);
         this.addData = this.addData.bind(this);
         this.searchText = this.searchText.bind(this);
-    this.removeModal = this.removeModal.bind(this);
     this.initialCheck = this.initialCheck.bind(this);
 
 
     }
 
-    removeModal(){
-      this.props.hideModal();
-    }
      searchText(text){
       const {siblings} =this.props;
       var siblingIsPresent={}
@@ -67,9 +63,8 @@ constructor(props) {
     	
     		this.setState({text:e.target.value})
     
-    	
-
-    }
+    	}
+      
     render() {
    
     	return (
@@ -79,7 +74,7 @@ constructor(props) {
     <input type="text" className="inputContainer" onChange={this.saveText} placeholder="Enter node that needs to be replaced" name="text" required/>
    </div>
     <button type="submit" onClick={this.initialCheck}>submit</button>
-   <button type="button" className="cancelbtn" onClick={this.removeModal}>Cancel</button>
+   <button type="button" className="cancelbtn" onClick={this.props.hideModal.bind(this)}>Cancel</button>
    </div>
    {
     this.state.isFetching && 

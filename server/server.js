@@ -115,6 +115,19 @@ app.get('/findAllNodes',function(req,res){
 	});
 });
 
+app.get('/findAllNodesWithLength',function(req,res){
+  console.log(req.query.level*1+1)
+  database.connect().then(function(db){
+    db.collection('tracxn').find({level:req.query.level*1+1}).toArray(function(err,result){
+           if(err){
+            res.send(err);
+           }
+           res.send(result)
+           database.close(db);
+    });
+  });
+});
+
 app.post('/updateNodes',function(req,res){
 	
 	database.connect().then(function(db){
@@ -141,7 +154,7 @@ app.post('/editNode',function(req,res){
            if(error){
            	res.send(error);
            }
-           console.log("reeeeee",result.data)
+           console.log("reeeeee",result)
 
        db.collection('tracxn').updateMany({parent:req.body.originalText},{$set:{parent:req.body.text}},function(errorAfterParentSwap,responseAfterParentSwap){
            if(errorAfterParentSwap){
